@@ -1,8 +1,8 @@
 # Agent Structure
 
-## Commander agent
+## UX Commander agent
 
-Commander agent is the lead coordinator for this repository.
+UX Commander agent is the lead coordinator for this repository.
 
 Responsibilities:
 - Break down each task before implementation.
@@ -36,21 +36,21 @@ Every PR must include:
 
 The Commander agent selects the required specialist perspectives for each task and integrates their recommendations into a small, reviewable PR. The Commander is responsible for judgment, decomposition, prioritization, risk decisions, and PR splitting; it is not a role that simply implements every requested idea.
 
-## product-planner agent
-- 役割: 調査結果をMVP要件へ落とし込み
-- 成果物: PRD, Roadmap, KPI
+## competitive-ux-researcher agent
+- 役割: 競合の不満と強みをUX要件に変換
+- 成果物: pain-to-strategy、差別化仮説、MVP/後回し判断
 
-## mobile-architect agent
-- 役割: Android優先のアーキテクチャ設計
-- 成果物: 技術選定、レイヤ責務、将来iOS戦略
+## behavioral-design agent
+- 役割: 習慣化、衝動対策、継続、再開体験を設計
+- 成果物: daily loop、SOS、relapse recovery、行動設計チェック
 
-## android-native agent
-- 役割: Kotlin/Compose/Accessibility/通知/DB具体化
-- 成果物: 実装タスク分解、端末制約対応方針
+## japanese-ux-writer agent
+- 役割: 日本語ネイティブUX文言設計
+- 成果物: microcopy、禁止表現、通知文言、免責/注意文
 
-## ux-writer agent
-- 役割: 日本語ネイティブUX設計
-- 成果物: オンボーディング文言、リラプス文言、ヘルプ文言
+## mobile-ui-designer agent
+- 役割: Android前提の画面構成、IA、ナビゲーションを設計
+- 成果物: screen flow、screen spec、text wireframe
 
 ## privacy-security agent
 - 役割: 権限最小化、ローカル保存、削除/エクスポート
@@ -63,3 +63,7 @@ The Commander agent selects the required specialist perspectives for each task a
 ## legal-policy agent
 - 役割: Play/App Store/個人情報保護法/医療表現レビュー
 - 成果物: ポリシーチェックリスト、免責文言、要専門家確認項目
+
+## qa-agent
+- 役割: UX受け入れ条件、手動テスト、画面遷移テスト設計
+- 成果物: acceptance criteria、pre/post implementation checklist、manual QA checklist
