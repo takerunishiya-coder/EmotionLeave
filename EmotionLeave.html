@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<title>EmotionLeave — Android Screens</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+  body { background: #0a0c0d; }
+  [data-theme="light"] body, body[data-pageframe="light"] { background: #efeee8; }
+
+  /* Phone wrapper inside design canvas artboards */
+  .phone {
+    width: 360px;
+    height: 720px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    border: 6px solid rgba(120,125,120,0.35);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font);
+    position: relative;
+  }
+  .phone[data-theme="light"] { background: #f4f3ef; color: #1a1d1b; }
+
+  /* Per-phone theme */
+  .phone[data-theme="light"] {
+    --bg: #f4f3ef; --surface: #ffffff; --surface-2: #f7f6f1; --surface-3: #efeee8;
+    --line: rgba(0,0,0,0.07); --line-strong: rgba(0,0,0,0.12);
+    --text: #1a1d1b; --text-2: #5a615d; --text-3: #8b918d;
+    --accent: oklch(0.52 0.06 165);
+    --accent-soft: oklch(0.92 0.03 165);
+    --accent-tint: oklch(0.92 0.04 165 / 0.6);
+    --warm: oklch(0.55 0.08 70);
+    --warm-soft: oklch(0.93 0.03 70);
+    --sos: oklch(0.56 0.16 28);
+    --shadow-card: 0 1px 0 rgba(255,255,255,0.6) inset, 0 4px 14px rgba(20,30,25,0.06);
+  }
+
+  .canvas-intro {
+    padding: 16px 20px 8px;
+    color: rgba(60,50,40,0.78);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    max-width: 720px;
+  }
+  .canvas-intro h1 { font-size: 18px; margin: 0 0 6px; font-weight: 600; }
+  .canvas-intro p  { font-size: 13px; margin: 0; line-height: 1.6; }
+  .canvas-intro .meta {
+    font-size: 11px; color: rgba(60,50,40,0.55); margin-top: 8px;
+    font-family: ui-monospace, monospace;
+  }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="image-slot.js"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "dark",
+  "showLatestBadge": true,
+  "reducedMotion": false
+}/*EDITMODE-END*/;
+
+function PhoneFrame({ children, theme }) {
+  return (
+    <div className="phone" data-theme={theme} data-screen-label={children.props.label}>
+      {children}
+    </div>
+  );
+}
+
+function ab({ id, label, theme, screen, modal, modalState, reducedMotion, key }) {
+  return (
+    <DCArtboard key={key || id} id={id} label={label} width={372} height={732}>
+      <div className="phone" data-theme={theme}>
+        <App initial={screen} showModal={!!modal} modalState={modalState || "settled"} reducedMotionInit={!!reducedMotion} theme={theme} />
+      </div>
+    </DCArtboard>
+  );
+}
+
+function Root() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const theme = t.theme;
+
+  // Apply theme to root for canvas chrome
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    document.body.style.background = theme === "light" ? "#efeee8" : "#0a0c0d";
+  }, [theme]);
+
+  return (
+    <>
+      <DesignCanvas>
+        <DCSection id="primary" title="EmotionLeave — Androidスクリーン" subtitle="主要6画面 / 各フレーム内でクリック遷移できます">
+          {ab({ id: "home",        label: "01 Home",             theme, screen: "home" })}
+          {ab({ id: "avatar",      label: "02 Avatar Selection", theme, screen: "avatar" })}
+          {ab({ id: "levelup",     label: "03 Level-up Modal",   theme, screen: "home", modal: true, modalState: "settled" })}
+          {ab({ id: "achievement", label: "04 Achievement / Insights", theme, screen: "achievement" })}
+          {ab({ id: "restart",     label: "05 Restart Flow",     theme, screen: "restart" })}
+          {ab({ id: "settings",    label: "06 Settings Profile", theme, screen: "settings" })}
+        </DCSection>
+
+        <DCSection id="checkin" title="日次チェックインとSOS" subtitle="毎日の中心動線">
+          {ab({ id: "onboarding", label: "Onboarding",   theme, screen: "onboarding" })}
+          {ab({ id: "goal",       label: "Goal Setup",   theme, screen: "goal" })}
+          {ab({ id: "pledge",     label: "Daily Pledge", theme, screen: "pledge" })}
+          {ab({ id: "review",     label: "Daily Review", theme, screen: "review" })}
+          {ab({ id: "sos",        label: "SOS",          theme, screen: "sos" })}
+          {ab({ id: "relapse",    label: "Relapse Log",  theme, screen: "relapse" })}
+        </DCSection>
+
+        <DCSection id="data" title="データとプライバシー" subtitle="Settings配下">
+          {ab({ id: "export",  label: "Data Export / Delete",  theme, screen: "export" })}
+          {ab({ id: "privacy", label: "Privacy Lock",          theme, screen: "privacy" })}
+          {ab({ id: "blocker", label: "Future Blocker (準備中)", theme, screen: "blockers" })}
+        </DCSection>
+
+        <DCSection id="levelup-states" title="Level-up モーダルの状態別" subtitle="演出の見え方をコマ送りで確認 / 7日達成版・複数バッジ・Reduced Motion">
+          {ab({ id: "lu-before",  label: "A · Before Reveal",   theme, screen: "home", modal: true, modalState: "before" })}
+          {ab({ id: "lu-reveal",  label: "B · Reveal",          theme, screen: "home", modal: true, modalState: "reveal" })}
+          {ab({ id: "lu-peak",    label: "C · Avatar Jump Peak", theme, screen: "home", modal: true, modalState: "peak" })}
+          {ab({ id: "lu-settled", label: "D · Settled",         theme, screen: "home", modal: true, modalState: "settled" })}
+          {ab({ id: "lu-rm",      label: "E · Reduced Motion",  theme, screen: "home", modal: true, modalState: "rm", reducedMotion: true })}
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel>
+        <TweakSection label="Theme" />
+        <TweakRadio
+          label="ライト/ダーク"
+          value={theme}
+          options={[{ label: "ダーク", value: "dark" }, { label: "ライト", value: "light" }]}
+          onChange={(v) => setTweak("theme", v)}
+        />
+        <TweakSection label="演出" />
+        <TweakToggle
+          label="演出を控えめに"
+          value={t.reducedMotion}
+          onChange={(v) => setTweak("reducedMotion", v)}
+        />
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
+</script>
+
+</body>
+</html>
