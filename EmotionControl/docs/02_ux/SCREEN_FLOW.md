@@ -4,12 +4,14 @@
 flowchart TD
     Splash["Splash"] --> Onboarding["Onboarding"]
     Onboarding --> GoalSetup["Goal Setup"]
-    GoalSetup --> FirstPledge["First Daily Pledge"]
+    GoalSetup --> LifeValue["Life Value: 取り戻したいもの"]
+    LifeValue --> FirstPlan["First If-Then Plan"]
+    FirstPlan --> FirstPledge["First Daily Pledge"]
     FirstPledge --> Home["Home"]
 
     Home --> DailyPledge["Daily Pledge"]
     Home --> DailyReview["Daily Review"]
-    Home --> SOS["SOS"]
+    Home == "one tap / first viewport" ==> SOS["SOS"]
     Home --> ReasonCard["Reason Re-display"]
     Home --> Calendar["Calendar"]
     Home --> Insights["Insights"]
@@ -19,9 +21,12 @@ flowchart TD
     DailyReview --> Home
     DailyReview --> RelapseLog["Relapse Log"]
 
-    SOS --> Breathing["10s / 60s / 3min Actions"]
+    SOS --> AutoPause["10s Auto Pause"]
+    AutoPause --> Breathing["30s Breathing"]
+    Breathing --> BodyAction["60s Body Action"]
+    BodyAction --> ThreeMinAction["3min Action"]
+    ThreeMinAction --> SOSReflect["Later Reflection"]
     SOS --> RelapseLog
-    Breathing --> SOSReflect["Later Reflection"]
     SOSReflect --> DailyReview
     SOSReflect --> Home
 
@@ -72,10 +77,12 @@ flowchart TD
 
 - Onboarding中に課金、広告、評価依頼を出さない。
 - Goal Setupは後から変更可能にする。
-- SOSはHomeとBottom Navigationから1タップ。
+- SOSはHomeの第一表示範囲とBottom Navigationから1タップ。通知許可、日次完了状態、スクロール位置に邪魔されない。
 - Relapse Logは任意入力で進める。
 - Data Deleteは確認後に初期状態へ戻る。
 - Future BlockerはMVPでは権限要求ではなく説明と配置のみ。
 - Calendarは `成功/失敗` の採点ではなく、`整った日`, `揺れた日`, `立て直した日`, `記録した日` を扱う。
 - 外部コミュニティ導線はMVPに置かず、将来プレースホルダーに留める。
 - Homeは競合のような多ボタン集約を避け、SOSと今日のループを最優先する。
+- Daily Pledge/Reviewには10〜30秒のquick path、1分以内のstandard path、2分以内のdetail pathを用意する。
+- `戻った日を記録` はHomeの主CTAにせず、文脈的な副導線にする。
