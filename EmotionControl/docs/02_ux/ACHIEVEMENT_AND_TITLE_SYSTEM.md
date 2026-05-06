@@ -7,25 +7,24 @@
 ## Title Policy
 
 - 人に見られても恥ずかしくない名称にする。
-- 道徳的な上下、強さ、清さ、勝ち負けを連想させない。
+- 指定された称号名はバッジアセットと一致させる。ただし、ユーザー同士の上下比較、人格評価、責めの文脈では使わない。
 - 競合の称号名、階級名、動物名をコピーしない。
 - relapse後も一度獲得した称号は残す。
 - 称号は医療効果を示さない。
 - 称号をユーザーの人格評価にしない。
-- 連続記録だけを称号システムの中心にしない。
+- 連続記録の称号だけでなく、SOS、振り返り、再開などの行動記録もPhase 2以降で扱う。
 
 ## MVP Titles
 
 | ID | 称号 | 解放条件 | 表示タイミング | 意味 |
 |---|---|---|---|---|
-| title_start | はじめの一歩 | 初回誓約を保存 | 初回Home到達後 | 始めたことを肯定する |
-| title_3_checkins | 記録の芽 | Daily PledgeまたはReviewを合計3回 | Home/Insights | 開く習慣を称える |
-| title_7_days | 7日分の記録 | 現行記録7日 | Level-up modal | 1週間の節目 |
-| title_14_days | 14日分の記録 | 現行記録14日 | Level-up modal | 2週間の節目 |
-| title_30_days | 30日分の記録 | 現行記録30日 | Level-up modal | 1か月の節目 |
-| title_sos_used | 立ち止まれた | SOS完了1回 | SOS完了後/Insights | 衝動時の行動を称える |
-| title_restart | また始められた | Restart Flow完了1回 | Restart後 | 再開できた事実を称える |
-| title_review | 振り返れた | Daily Review完了5回 | Review後/Insights | 学習行動を称える |
+| title_1_day | はじめの一歩 | 1日達成 | Home/Level-up modal | 始めたことを肯定する |
+| title_3_days | 流れを変える者 | 3日連続達成 | Home/Level-up modal | 生活の流れが変わり始めた節目 |
+| title_7_days | 強固な意思 | 7日連続達成 | Level-up modal | 1週間の節目 |
+| title_14_days | 弱さとの決別 | 14日連続達成 | Level-up modal | 2週間の節目 |
+| title_30_days | 強者 | 30日連続達成 | Level-up modal | 1か月の節目 |
+| title_60_days | 漢 | 60日連続達成 | Level-up modal | 長期継続の節目 |
+| title_90_days | 黄金の精神 | 90日連続達成 | Level-up modal | 3か月の節目 |
 
 ## Phase 2 Titles
 
@@ -36,6 +35,9 @@
 | title_after_urge | 波を越えた | SOS後にHomeへ戻る 3回 |
 | title_export_ready | 自分で管理できる | Data Export画面を確認 |
 | title_privacy_ready | 守る準備 | App Lock有効化 |
+| title_sos_used | 立ち止まれた | SOS完了1回 |
+| title_restart | また始められた | Restart Flow完了1回 |
+| title_review | 振り返れた | Daily Review完了5回 |
 
 ## Display Timing
 
@@ -87,8 +89,8 @@ MVPで必要な状態:
 
 ## Acceptance Criteria
 
-- 7日、14日、30日の節目で称号が解放される。
-- SOSやRestartなど日数以外の行動称号がある。
+- 1日、3日、7日、14日、30日、60日、90日の節目で指定称号が解放される。
+- Phase 2ではSOSやRestartなど日数以外の行動称号を追加できる。
 - 一度獲得した称号はrelapse後も残る。
 - 称号名が恥ずかしくない。
 - 称号に医療効果や性的表現がない。

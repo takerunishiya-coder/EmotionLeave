@@ -604,6 +604,31 @@ body {
 }
 .sos-action .body .t { font-weight: 500; }
 .sos-action .body .s { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.sos-exits {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.quick-chip {
+  min-height: 42px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.quick-chip:hover {
+  border-color: var(--accent-soft);
+  background: var(--accent-tint);
+}
 
 /* ── Pledge / Review screens ────────────────────────────────── */
 .pledge-list {

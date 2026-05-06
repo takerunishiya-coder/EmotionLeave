@@ -113,6 +113,7 @@ function NavBar() {
 function TabBar({ active, onChange }) {
   const tabs = [
     { id: "home", icon: "home", label: "ホーム" },
+    { id: "sos", icon: "shield", label: "SOS" },
     { id: "achievement", icon: "chart", label: "できたこと" },
     { id: "settings", icon: "settings", label: "設定" },
   ];
@@ -138,13 +139,13 @@ const AVATARS = [
 
 // ── Badges ──────────────────────────────────────────────────────────────────
 const BADGES = [
-  { id: "first", name: "はじめの一歩", file: "title_hajimenoippo.png", earned: true, when: "5/1" },
-  { id: "flow", name: "流れを変える者", file: "title_nagarewokaeru.png", earned: true, when: "5/2" },
-  { id: "will", name: "強固な意思", file: "title_kyoukonaishi.png", earned: true, when: "5/3" },
-  { id: "d7", name: "強者", file: "title_kyousya.png", earned: true, when: "5/7" },
-  { id: "gold", name: "黄金の精神", file: "title_ougonnoseishin.png", earned: false, meta: "あと23日" },
-  { id: "parting", name: "弱さとの決別", file: "title_yowasatonoketsubetsu.png", earned: false, meta: "あと9日" },
-  { id: "otoko", name: "漢", file: "title_otoko.png", earned: false, meta: "あと25日" },
+  { id: "d1", name: "はじめの一歩", file: "title_hajimenoippo.png", earned: true, when: "1日達成", condition: "1日達成" },
+  { id: "d3", name: "流れを変える者", file: "title_nagarewokaeru.png", earned: true, when: "3日連続達成", condition: "3日連続達成" },
+  { id: "d7", name: "強固な意思", file: "title_kyoukonaishi.png", earned: false, meta: "あと2日", condition: "7日連続達成" },
+  { id: "d14", name: "弱さとの決別", file: "title_yowasatonoketsubetsu.png", earned: false, meta: "あと9日", condition: "14日連続達成" },
+  { id: "d30", name: "強者", file: "title_kyousya.png", earned: false, meta: "あと25日", condition: "30日連続達成" },
+  { id: "d60", name: "漢", file: "title_otoko.png", earned: false, meta: "あと55日", condition: "60日連続達成" },
+  { id: "d90", name: "黄金の精神", file: "title_ougonnoseishin.png", earned: false, meta: "あと85日", condition: "90日連続達成" },
 ];
 
 // ── Screens ────────────────────────────────────────────────────────────────
@@ -211,12 +212,12 @@ function HomeScreen({ onSOS, onPledge, onReview, onAvatar, onBadgeOpen, selected
         {/* Latest badge */}
         {showLatestBadge && (
           <div className="badge-row badge-row-with-image" onClick={onBadgeOpen} role="button">
-            <TitleBadgeImage file="title_kyoukonaishi.png" name="強固な意思" />
+            <TitleBadgeImage file="title_nagarewokaeru.png" name="流れを変える者" />
             <div>
-              <div className="name">強固な意思</div>
+              <div className="name">流れを変える者</div>
               <div style={{ fontSize: 11, color: "var(--text-3)", marginTop: 2 }}>最新の記録バッジ</div>
             </div>
-            <div className="when">5/7</div>
+            <div className="when">3日</div>
           </div>
         )}
         <div style={{ height: 8 }}/>
@@ -310,13 +311,13 @@ function LevelUpModal({ onClose, reducedMotion, selectedAvatar, motionState = "a
           </div>
         )}
         <h2>7日間達成!!</h2>
-        <TitleBadgeImage file="title_kyousya.png" name="強者" className="levelup-title-badge" />
+        <TitleBadgeImage file="title_kyoukonaishi.png" name="強固な意思" className="levelup-title-badge" />
         <div className="av-large">
           <div className="glow"/>
           <LevelUpAvatar id={selectedAvatar} reducedMotion={reducedMotion} state={motionState} />
         </div>
         <div className="badge-name">
-          7日分の記録
+          7日連続達成
         </div>
         <p>新しい記録バッジを手に入れました。<br/>ここまでの記録は残っています。</p>
         <div className="actions">
@@ -343,7 +344,7 @@ function AchievementScreen() {
         </div>
 
         <div className="summary">
-          <div className="cell"><div className="v">5</div><div className="l">獲得済み</div></div>
+          <div className="cell"><div className="v">{earned.length}</div><div className="l">獲得済み</div></div>
           <div className="cell"><div className="v">18<span style={{fontSize:11,color:"var(--text-3)"}}>日</span></div><div className="l">最長</div></div>
           <div className="cell"><div className="v">120<span style={{fontSize:11,color:"var(--text-3)"}}>h</span></div><div className="l">累計</div></div>
         </div>
@@ -368,7 +369,7 @@ function AchievementScreen() {
               <TitleBadgeImage file={b.file} name={b.name} />
               <div className="badge-copy">
                 <div className="name">{b.name}</div>
-                <div className="meta">{b.meta}</div>
+                <div className="meta">{b.condition} / {b.meta}</div>
               </div>
             </div>
           ))}
@@ -420,7 +421,7 @@ function RestartScreen({ onBack }) {
   );
 }
 
-function SettingsScreen({ selectedAvatar, onAvatarChange, reducedMotion, setReducedMotion, onRestart }) {
+function SettingsScreen({ selectedAvatar, onAvatarChange, reducedMotion, setReducedMotion, privacyLock, setPrivacyLock, onRestart }) {
   const avatarLabel = AVATARS.find(a => a.id === selectedAvatar)?.label || "ジャケット";
   return (
     <>
@@ -441,7 +442,15 @@ function SettingsScreen({ selectedAvatar, onAvatarChange, reducedMotion, setRedu
           <div className="label">アバターを変更</div>
           <Icon name="chev" />
         </div>
-        <div className="note">獲得済みバッジ 5個</div>
+        <div className="note">獲得済みバッジ 2個</div>
+
+        <div className="section-label">プライバシー</div>
+        <div className="row" style={{ borderRadius: "var(--radius)", borderBottom: "1px solid var(--line)" }} onClick={() => setPrivacyLock(!privacyLock)}>
+          <Icon name="lock" />
+          <div className="label">アプリロック<div style={{fontSize:11,color:"var(--text-3)",marginTop:4,fontWeight:400}}>起動時にロック確認を表示</div></div>
+          <div className={"toggle" + (privacyLock ? " on" : "")} />
+        </div>
+        <div className="note">通知には目的が分かりすぎる言葉を表示しません。</div>
 
         <div className="section-label">表示と演出</div>
         <div className="row" style={{ borderRadius: "var(--radius)", borderBottom: "1px solid var(--line)" }} onClick={() => setReducedMotion(!reducedMotion)}>
@@ -534,7 +543,7 @@ function ReviewScreen({ onBack, onSubmit }) {
   );
 }
 
-function SOSScreen({ onClose }) {
+function SOSScreen({ onClose, onReview, onRelapse }) {
   const [stage, setStage] = useState("active"); // active | done
   if (stage === "done") {
     return (
@@ -550,7 +559,11 @@ function SOSScreen({ onClose }) {
           <p style={{ fontSize: 14, color: "var(--text-2)", lineHeight: 1.7, margin: "0 0 20px" }}>
             波が来たことに気づけたのは、立派な記録です。
           </p>
-          <button className="btn btn-primary" onClick={onClose}>ホームに戻る</button>
+          <div className="sos-exits">
+            <button className="btn btn-primary" onClick={onClose}>ホームに戻る</button>
+            <button className="btn" onClick={onReview}>あとで振り返る</button>
+            <button className="btn btn-ghost" onClick={onRelapse}>戻った日を記録する</button>
+          </div>
         </div>
       </>
     );
@@ -570,7 +583,11 @@ function SOSScreen({ onClose }) {
         <div className="sos-actions">
           <button className="sos-action" onClick={() => setStage("done")}>
             <div className="ic"><Icon name="wind" size={18}/></div>
-            <div className="body"><div className="t">10秒だけ深呼吸</div><div className="s">息を吐いて、肩の力を抜く</div></div>
+            <div className="body"><div className="t">10秒だけ止まる</div><div className="s">画面を閉じず、息を吐く</div></div>
+          </button>
+          <button className="sos-action" onClick={() => setStage("done")}>
+            <div className="ic"><Icon name="wind" size={18}/></div>
+            <div className="body"><div className="t">30秒だけ呼吸する</div><div className="s">4秒吸って、6秒吐く</div></div>
           </button>
           <button className="sos-action" onClick={() => setStage("done")}>
             <div className="ic"><Icon name="sprout" size={18}/></div>
@@ -586,6 +603,41 @@ function SOSScreen({ onClose }) {
   );
 }
 
+function RelapseLogScreen({ onBack, onRestart }) {
+  return (
+    <>
+      <div className="app-back">
+        <button className="icon-btn" onClick={onBack}><Icon name="back"/></button>
+        <div className="title">戻った日の記録</div>
+      </div>
+      <div className="scroll">
+        <div className="restart-hero">
+          <h2>記録は、ここで終わりではありません。</h2>
+          <p>起きたことを短く残して、次の24時間に集中しましょう。詳しく書かなくても大丈夫です。</p>
+        </div>
+
+        <div className="section-label">いつ頃でしたか</div>
+        <div className="quick-grid">
+          {["今日", "昨日", "数日前"].map(x => <button key={x} className="quick-chip">{x}</button>)}
+        </div>
+
+        <div className="section-label">きっかけ(任意)</div>
+        <div className="quick-grid">
+          {["疲れ", "夜更かし", "ひとり時間", "スマホ", "気分の波", "未選択"].map(x => <button key={x} className="quick-chip">{x}</button>)}
+        </div>
+
+        <div className="note" style={{ marginTop: 14 }}>
+          最長記録、累計成功時間、獲得済みバッジは残ります。
+        </div>
+
+        <div style={{ marginTop: 20 }}>
+          <button className="btn btn-primary" onClick={onRestart}>次の24時間を決める</button>
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ── Main app — single-frame stateful prototype ──────────────────────────────
 function App({ initial = "home", showModal = false, reducedMotionInit = false, theme = "dark", showLatestBadge = true, modalState = "animated" }) {
   const [screen, setScreen] = useState(initial);
@@ -593,6 +645,7 @@ function App({ initial = "home", showModal = false, reducedMotionInit = false, t
   const [modal, setModal] = useState(showModal ? "levelup" : null);
   const [reducedMotion, setReducedMotion] = useState(reducedMotionInit);
   const [selectedAvatar, setSelectedAvatar] = useState("avatar_jacket");
+  const [privacyLock, setPrivacyLock] = useState(true);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -602,6 +655,7 @@ function App({ initial = "home", showModal = false, reducedMotionInit = false, t
   const goTab = (t) => {
     setTab(t);
     if (t === "home") setScreen("home");
+    else if (t === "sos") setScreen("sos");
     else if (t === "achievement") setScreen("achievement");
     else if (t === "settings") setScreen("settings");
   };
@@ -625,16 +679,24 @@ function App({ initial = "home", showModal = false, reducedMotionInit = false, t
         onAvatarChange={() => setScreen("avatar")}
         reducedMotion={reducedMotion}
         setReducedMotion={setReducedMotion}
+        privacyLock={privacyLock}
+        setPrivacyLock={setPrivacyLock}
         onRestart={() => setScreen("restart")} />;
       break;
     case "restart":
       body = <RestartScreen onBack={() => { setScreen("home"); setTab("home"); }} />; break;
+    case "relapse":
+      body = <RelapseLogScreen onBack={() => setScreen("sos")} onRestart={() => setScreen("restart")} />; break;
     case "pledge":
       body = <PledgeScreen onBack={() => setScreen("home")} onSubmit={() => setScreen("home")} />; break;
     case "review":
       body = <ReviewScreen onBack={() => setScreen("home")} onSubmit={() => { setScreen("home"); setModal("levelup"); }} />; break;
     case "sos":
-      body = <SOSScreen onClose={() => setScreen("home")} />; break;
+      body = <SOSScreen
+        onClose={() => { setScreen("home"); setTab("home"); }}
+        onReview={() => setScreen("review")}
+        onRelapse={() => setScreen("relapse")}
+      />; break;
     case "home":
     default:
       body = <HomeScreen
@@ -648,7 +710,7 @@ function App({ initial = "home", showModal = false, reducedMotionInit = false, t
       />;
   }
 
-  const showTabBar = ["home", "achievement", "settings"].includes(screen);
+  const showTabBar = ["home", "sos", "achievement", "settings"].includes(screen);
 
   return (
     <div className="app">
