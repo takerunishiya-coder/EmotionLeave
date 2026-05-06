@@ -37,13 +37,21 @@ MVPでは `静止PNG + Compose UIアニメーション` を採用する。
 
 MVP構成:
 
-- `/assets/avatar/avatar_01.png`
-- `/assets/avatar/avatar_02.png`
-- `/assets/avatar/avatar_03.png`
+- `/assets/avatars/avatar_jacket.png`
+- `/assets/avatars/avatar_centerpart.png`
+- `/assets/avatars/avatar_suit.png`
+- `/assets/avatars/avatar_kinniku.png`
 - UI animation: scale, offset, alpha, glow
 - confetti: Compose Canvas or lightweight local particle implementation
 - no audio
 - no video
+
+MVP avatar source:
+
+- 上記4枚はユーザー提供の人物ピクセルアートをアバター候補として配置する。
+- 実装時はAndroid resource命名規則に合わせ、必要なら `res/drawable-nodpi/` または `res/drawable/` へコピー/変換する。
+- 元画像は正方形PNGのため、Homeや選択画面ではリサイズ表示し、人物が切れないように `ContentScale.Fit` を基本にする。
+- 背景透過が必要になった場合は、元画像を直接破壊せず、派生ファイルを別名で作る。
 
 ## Phase 2 Strategy
 
@@ -84,7 +92,7 @@ mp4/短尺動画は次の場合のみ検討する。
 
 ## Asset Register
 
-実装前に `docs/01_architecture/ASSET_LICENSES.md` または同等の管理表を作る。
+実装前に `docs/01_architecture/ASSET_LICENSES.md` または同等の管理表を作る。MVPで使う4体の初期台帳は同ファイルに記録する。
 
 必須項目:
 
@@ -149,5 +157,5 @@ mp4/短尺動画は次の場合のみ検討する。
 
 - MVPでconfettiをCanvas実装にするか、静的burst画像にするか。
 - アバターPNGの推奨サイズを 256px / 512px のどちらにするか。
-- アセット出所メモを `docs/01_architecture/ASSET_LICENSES.md` として別管理するか。
+- 現在の元画像は 1254px 正方形のため、実装時に原寸同梱するか 512px 派生版を作るか。
 - Lottie/Rive導入時のライブラリ選定をいつ行うか。

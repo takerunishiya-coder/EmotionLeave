@@ -37,6 +37,29 @@ flowchart TD
 - 優劣、レア度、ランク、性格診断のような選択肢にしない
 - 例: `静かに見守る`, `短く背中を押す`, `淡々と記録する`, `やさしく整える`
 
+## MVP Avatar Set
+
+ユーザー提供の4枚の人物ピクセルアートをMVPアバター候補として扱う。表示名はキャラクターの優劣や性格診断に見えない、中立的なラベルにする。
+
+| avatarId | file | selection label | UX note |
+|---|---|---|---|
+| `avatar_jacket` | `assets/avatars/avatar_jacket.png` | ジャケット | カジュアルで始めやすい印象。初心者向けに見えるが、優劣は付けない。 |
+| `avatar_centerpart` | `assets/avatars/avatar_centerpart.png` | センターパート | 落ち着いた普段着の印象。人前で見られても説明しやすい。 |
+| `avatar_suit` | `assets/avatars/avatar_suit.png` | スーツ | 仕事、集中、整える印象に接続しやすい。成果保証の文言にはしない。 |
+| `avatar_kinniku` | `assets/avatars/avatar_kinniku.png` | アクティブ | 体を動かす、切り替える印象に使える。筋力や健康効果を断定しない。 |
+
+デフォルト:
+
+- `あとで選ぶ` の場合は `avatar_jacket` を暫定デフォルトにする。
+- 将来、抽象アイコンや中立シルエットを追加した場合は、デフォルトをそちらへ変更してもよい。
+
+表示仕様:
+
+- 選択グリッドでは全身が見える正方形サムネイルとして表示する。
+- Homeでは小さく表示し、SOSボタンや今日の宣言を押し下げない。
+- Level-up modalでは選択中アバターのみを表示する。
+- ラベルは通知、ロック画面、外部共有画像には出さない。
+
 ## Later Change Flow
 
 導線:
