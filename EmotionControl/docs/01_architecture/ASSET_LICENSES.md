@@ -24,6 +24,15 @@ Before using these assets in a public build:
 - Confirm the assets are not derived from protected characters, games, anime, manga, or competitor app assets.
 - Keep original files and edited derivatives separate.
 
+## Level-Up Frame Assets
+
+| assetId | file path | type | creator / provider | source | license / permission | commercial use | modification allowed | attribution required | status | notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `avatar_jacket_level_up_frames` | `assets/avatars/level_up/avatar_jacket/frame_*.png` | avatar motion | User-provided / resized derivative | `C:/Users/nsyte/Downloads/jacket_*.png` | Project-owner confirmation required before release | TBD | TBD | TBD | Draft asset | Fist-pump level-up frames based on user-provided sequence images. |
+| `avatar_centerpart_level_up_frames` | `assets/avatars/level_up/avatar_centerpart/frame_*.png` | avatar motion | User-provided / resized derivative | `C:/Users/nsyte/Downloads/centerpart_*.png` | Project-owner confirmation required before release | TBD | TBD | TBD | Draft asset | Fist-pump level-up frames based on user-provided sequence images. |
+| `avatar_suit_level_up_frames` | `assets/avatars/level_up/avatar_suit/frame_*.png` | avatar motion | User-provided / resized derivative | `C:/Users/nsyte/Downloads/suit_*.png` | Project-owner confirmation required before release | TBD | TBD | TBD | Draft asset | Fist-pump level-up frames based on user-provided sequence images. |
+| `avatar_kinniku_level_up_frames` | `assets/avatars/level_up/avatar_kinniku/frame_*.png` | avatar motion | User-provided / generated derivative | `C:/Users/nsyte/Downloads/ChatGPT Image 2026年5月6日 11_15_38 (*.png)` | Project-owner confirmation required before release | TBD | TBD | TBD | Draft asset | Fist-raise level-up frames based on user-provided sequence images. |
+
 ## Naming Rules
 
 - Repo asset file names use lowercase snake case.

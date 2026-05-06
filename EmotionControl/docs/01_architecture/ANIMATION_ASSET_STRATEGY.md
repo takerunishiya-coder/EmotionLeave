@@ -16,15 +16,16 @@ EmotionLeaveのアバター/称号/レベルアップ演出を、MVPで安全に
 
 | 方式 | 概要 | メリット | デメリット | 推奨 |
 |---|---|---|---|---|
-| 静止PNG + UIアニメーション | PNGをCompose側でscale/offset/alpha/confetti表示 | 実装が軽い。権利管理が分かりやすい。オフラインで安定。MVP向き | 表情や複雑な動きは弱い | MVP採用 |
-| スプライトシート | 連続フレーム画像を1枚にまとめて再生 | キャラ表現を細かく制御できる。動画より透明背景に強い | 容量が増えやすい。フレーム管理が必要 | Phase 2候補 |
+| 静止PNG + UIアニメーション | PNGをCompose側でscale/offset/alpha/confetti表示 | 実装が軽い。権利管理が分かりやすい。オフラインで安定。MVP向き | 表情や複雑な動きは弱い | MVP fallback |
+| PNG連続フレーム | 5〜6枚の透過PNGを順番に再生 | アバターが実際に動く。Rive/Lottieなしで実装可能。オフラインで安定 | 容量とフレーム管理が必要。ポーズ差分の制作コストがある | MVP+採用 |
+| スプライトシート | 連続フレーム画像を1枚にまとめて再生 | キャラ表現を細かく制御できる。動画より透明背景に強い | 容量が増えやすい。フレーム切り出し管理が必要 | Phase 2候補 |
 | Lottie | JSONベースのベクターアニメーション | 軽量。UI演出に強い。デザイナー連携しやすい | 複雑な画像/キャラ表現には限界。ライブラリ依存 | Phase 2候補 |
 | Rive | 状態機械つきインタラクティブアニメーション | 表情/状態変化/インタラクションに強い | ランタイム導入、学習、審査時説明が増える | Phase 2/3候補 |
 | mp4 | 動画ファイルを再生 | 表現力が高い。制作済み動画を使いやすい | 容量、透過、ループ、端末負荷、スキップ制御に注意 | Phase 3以降 |
 
 ## MVP Recommendation
 
-MVPでは `静止PNG + Compose UIアニメーション` を採用する。
+MVPでは `静止PNG + Compose UIアニメーション` をfallbackとして残しつつ、レベルアップモーダルでは `PNG連続フレーム` を採用する。
 
 理由:
 
@@ -37,12 +38,21 @@ MVPでは `静止PNG + Compose UIアニメーション` を採用する。
 
 MVP構成:
 
-- `/assets/avatars/avatar_jacket.png`
-- `/assets/avatars/avatar_centerpart.png`
-- `/assets/avatars/avatar_suit.png`
-- `/assets/avatars/avatar_kinniku.png`
+- base avatars:
+  - `/assets/avatars/avatar_jacket.png`
+  - `/assets/avatars/avatar_centerpart.png`
+  - `/assets/avatars/avatar_suit.png`
+  - `/assets/avatars/avatar_kinniku.png`
+- level-up frames:
+  - `/assets/avatars/level_up/avatar_jacket/frame_*.png`
+  - `/assets/avatars/level_up/avatar_centerpart/frame_*.png`
+  - `/assets/avatars/level_up/avatar_suit/frame_*.png`
+  - `/assets/avatars/level_up/avatar_kinniku/frame_*.png`
+- sprite sheet previews:
+  - `/assets/avatars/level_up/{avatarId}/sprite_sheet.png`
 - UI animation: scale, offset, alpha, glow
 - confetti: Compose Canvas or lightweight local particle implementation
+- title plate: static PNG/vector-like UI component or Compose shape
 - no audio
 - no video
 
@@ -50,6 +60,11 @@ MVP avatar source:
 
 - 上記4枚はユーザー提供の人物ピクセルアートをアバター候補として配置する。
 - MVPアバターは背景透過済みPNGとして管理する。
+- レベルアップ用の連続フレームは、背景透過済みPNGとして `level_up/{avatarId}` 配下に管理する。
+- `avatar_jacket` はユーザー提供のガッツポーズ連続画像を参考フレームとして採用する。
+- `avatar_centerpart` はユーザー提供のガッツポーズ連続画像を参考フレームとして採用する。
+- `avatar_suit` はユーザー提供のガッツポーズ連続画像を参考フレームとして採用する。
+- `avatar_kinniku` はユーザー提供の連続ポーズ画像を参考フレームとして採用する。
 - 実装時はAndroid resource命名規則に合わせ、必要なら `res/drawable-nodpi/` または `res/drawable/` へコピー/変換する。
 - 元画像は正方形PNGのため、Homeや選択画面ではリサイズ表示し、人物が切れないように `ContentScale.Fit` を基本にする。
 - 背景付きの元画像が必要な場合は、Git履歴または別管理の原本から復元する。今後の派生編集は別名で作る。
@@ -113,7 +128,7 @@ mp4/短尺動画は次の場合のみ検討する。
 
 - Level-up演出は3秒以内。
 - いつでもスキップ可能。
-- Reduced Motion有効時はjump/scale/confettiを止める。
+- Reduced Motion有効時はframe playback/jump/scale/confettiを止める。
 - アセット読込失敗時はデフォルト静止アイコンへフォールバック。
 - SOS/Relapse/Privacy Lock中は演出を表示せずキューに積む。
 - 動画/高度アニメーション導入時も、静止PNG fallbackを必ず残す。
@@ -149,6 +164,7 @@ mp4/短尺動画は次の場合のみ検討する。
 
 - Avatar rendering: `Image` with fixed size and contentDescription.
 - Motion: `animateFloatAsState`, `Animatable`, `updateTransition`.
+- Frame playback: 80〜140ms intervalで `frame_*.png` を切り替える。端末負荷が高い場合は代表フレームへfallback。
 - Confetti: simple Canvas particles or static decorative burst in MVP.
 - Accessibility: animation is decorative; screen readerには称号テキストだけを読む。
 - Reduced Motion: system setting and app settingを両方参照する。
@@ -159,4 +175,5 @@ mp4/短尺動画は次の場合のみ検討する。
 - MVPでconfettiをCanvas実装にするか、静的burst画像にするか。
 - アバターPNGの推奨サイズを 256px / 512px のどちらにするか。
 - 現在の透過PNGは 1254px 正方形のため、実装時に原寸同梱するか 512px 派生版を作るか。
+- level-up frameは現在768px正方形。実装時に原寸同梱するか 384px / 512px 派生版を作るか。
 - Lottie/Rive導入時のライブラリ選定をいつ行うか。
