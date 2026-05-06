@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<title>EmotionLeave — Android Screens</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+  body { background: #0a0c0d; }
+  [data-theme="light"] body, body[data-pageframe="light"] { background: #efeee8; }
+
+  /* Phone wrapper inside design canvas artboards */
+  .phone {
+    width: 360px;
+    height: 720px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    border: 6px solid rgba(120,125,120,0.35);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font);
+    position: relative;
+  }
+  .phone[data-theme="light"] { background: #f4f3ef; color: #1a1d1b; }
+
+  /* Per-phone theme */
+  .phone[data-theme="light"] {
+    --bg: #f4f3ef; --surface: #ffffff; --surface-2: #f7f6f1; --surface-3: #efeee8;
+    --line: rgba(0,0,0,0.07); --line-strong: rgba(0,0,0,0.12);
+    --text: #1a1d1b; --text-2: #5a615d; --text-3: #8b918d;
+    --accent: oklch(0.52 0.06 165);
+    --accent-soft: oklch(0.92 0.03 165);
+    --accent-tint: oklch(0.92 0.04 165 / 0.6);
+    --warm: oklch(0.55 0.08 70);
+    --warm-soft: oklch(0.93 0.03 70);
+    --sos: oklch(0.56 0.16 28);
+    --shadow-card: 0 1px 0 rgba(255,255,255,0.6) inset, 0 4px 14px rgba(20,30,25,0.06);
+  }
+
+  .canvas-intro {
+    padding: 16px 20px 8px;
+    color: rgba(60,50,40,0.78);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    max-width: 720px;
+  }
+  .canvas-intro h1 { font-size: 18px; margin: 0 0 6px; font-weight: 600; }
+  .canvas-intro p  { font-size: 13px; margin: 0; line-height: 1.6; }
+  .canvas-intro .meta {
+    font-size: 11px; color: rgba(60,50,40,0.55); margin-top: 8px;
+    font-family: ui-monospace, monospace;
+  }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "dark",
+  "showLatestBadge": true,
+  "reducedMotion": false
+}/*EDITMODE-END*/;
+
+function PhoneFrame({ children, theme }) {
+  return (
+    <div className="phone" data-theme={theme} data-screen-label={children.props.label}>
+      {children}
+    </div>
+  );
+}
+
+function ab({ id, label, theme, screen, modal, reducedMotion, key, showLatestBadge = true, modalState = "animated" }) {
+  return (
+    <DCArtboard key={key || id} id={id} label={label} width={372} height={732}>
+      <div className="phone" data-theme={theme}>
+        <App
+          initial={screen}
+          showModal={!!modal}
+          reducedMotionInit={!!reducedMotion}
+          theme={theme}
+          showLatestBadge={showLatestBadge}
+          modalState={modalState}
+        />
+      </div>
+    </DCArtboard>
+  );
+}
+
+function Root() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const theme = t.theme;
+  const board = (opts) => ab({
+    ...opts,
+    theme,
+    showLatestBadge: t.showLatestBadge,
+    reducedMotion: opts.reducedMotion ?? t.reducedMotion,
+  });
+
+  // Apply theme to root for canvas chrome
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    document.body.style.background = theme === "light" ? "#efeee8" : "#0a0c0d";
+  }, [theme]);
+
+  return (
+    <>
+      <DesignCanvas>
+        <DCSection id="primary" title="EmotionLeave — Androidスクリーン" subtitle="主要6画面 + 補助5画面 / 各フレーム内でクリック遷移できます">
+          {board({ id: "home",            label: "01 Home",                  screen: "home" })}
+          {board({ id: "avatar",          label: "02 Avatar Selection",      screen: "avatar" })}
+          {board({ id: "levelup-before",  label: "03a Level-up Before",      screen: "home", modal: true, modalState: "before" })}
+          {board({ id: "levelup-peak",    label: "03b Level-up Motion Peak", screen: "home", modal: true, modalState: "peak" })}
+          {board({ id: "levelup-settled", label: "03c Level-up Settled",     screen: "home", modal: true, modalState: "settled" })}
+          {board({ id: "levelup-rm",      label: "03d Level-up Reduced Motion", screen: "home", modal: true, reducedMotion: true, modalState: "settled" })}
+          {board({ id: "achievement",     label: "04 Achievement / Insights", screen: "achievement" })}
+          {board({ id: "restart",         label: "05 Restart Flow",          screen: "restart" })}
+          {board({ id: "settings",        label: "06 Settings Profile",      screen: "settings" })}
+        </DCSection>
+
+        <DCSection id="extra" title="補助画面" subtitle="Onboarding / Pledge / Review / SOS — Homeから到達できます">
+          {board({ id: "onboarding", label: "A · Onboarding",   screen: "onboarding" })}
+          {board({ id: "pledge",     label: "B · Daily Pledge", screen: "pledge" })}
+          {board({ id: "review",     label: "C · Daily Review", screen: "review" })}
+          {board({ id: "sos",        label: "D · SOS",          screen: "sos" })}
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel>
+        <TweakSection label="Theme" />
+        <TweakRadio
+          label="ライト/ダーク"
+          value={theme}
+          options={[{ label: "ダーク", value: "dark" }, { label: "ライト", value: "light" }]}
+          onChange={(v) => setTweak("theme", v)}
+        />
+        <TweakSection label="Home" />
+        <TweakToggle
+          label="最新バッジを表示"
+          value={t.showLatestBadge}
+          onChange={(v) => setTweak("showLatestBadge", v)}
+        />
+        <TweakSection label="演出" />
+        <TweakToggle
+          label="演出を控えめに"
+          value={t.reducedMotion}
+          onChange={(v) => setTweak("reducedMotion", v)}
+        />
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
+</script>
+
+</body>
+</html>
